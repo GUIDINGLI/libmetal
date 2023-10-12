@@ -140,6 +140,19 @@ metal_bitmap_next_clear_bit(unsigned long *bitmap, unsigned int start,
 	return bit;
 }
 
+static inline unsigned int
+metal_bitmap_loopnext_clear_bit(unsigned long *bitmap, unsigned int start,
+				unsigned int max)
+{
+	unsigned int bit;
+
+	for (bit = start;
+	     bit < max + start && !metal_bitmap_is_bit_clear(bitmap, bit % max);
+	     bit++)
+		;
+	return bit % max;
+}
+
 #define metal_bitmap_for_each_clear_bit(bitmap, bit, max)		\
 	for ((bit) = metal_bitmap_next_clear_bit((bitmap), 0, (max));	\
 	     (bit) < (max);						\
